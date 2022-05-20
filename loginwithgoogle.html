@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bebeatsport</title>
+<meta charset="UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<style>
+    .show{
+      display: block;
+      visibility: visible;
+    }
+
+    .hidden{
+      display: none;
+      visibility: hidden;
+    }
+</style>
+</head>
+<body>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <div id="start">
+    <div style='width: 100%; padding:50px;'>
+      <div style='width: 100%; text-align: center; font-weight: 500'>Welcome to bebeatapp</div>
+      <div style='width: 100%; text-align: center; font-weight: 500'>Click to the button for continue login with google</div>
+      <br><br>
+      <center>
+        <div style="width: 75% ;">
+          <div id="g_id_onload"
+            data-client_id="781882233718-4u7e42qfq1i5k7lm515g66uf2argjalr.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse">
+          </div>
+          <div id="google" class="g_id_signin" data-type="standard"></div>
+        </div>
+      </center>
+    </div>
+  </div>
+
+  <div id="end" class="hidden">
+    <div style='width: 100%; padding:50px;'>
+      <br><br>
+      <center>
+          <a id="goBebeat" style='background:#FF018F; height:30px; font-size:1em; text-align:center; padding:10px; color:#fff; text-decoration: none; border-radius: 15px;'>
+            Click here to open bebeat app
+          </a>
+      </center>
+    </div>
+  </div>
+
+  
+  <a id="goBebeat" class="hidden">Click me for go to bebeatapp</a>
+  <script>
+
+    var dataUser = {
+        email: '',
+        name: '',
+        last_name: '',
+        picture: ''
+      }
+
+    async function handleCredentialResponse(response) {
+       const token = response.credential;
+       if(token){
+        await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`)
+         .then(response => response.json())
+         .then(data =>{
+           dataUser.email = data.email
+           dataUser.name = data.name
+           dataUser.last_name = data.family_name
+           dataUser.picture = data.picture
+         })
+         .catch(error => console.log(error))
+        console.log(dataUser)
+        let datos = JSON.stringify(dataUser)
+        let link ='bebeatapp://google/' + datos
+        document.getElementById("start").setAttribute("class","hidden")
+        document.getElementById("end").setAttribute("class", "show")
+        document.getElementById("goBebeat").setAttribute("href",link)
+        setTimeout(()=>{
+          window.location.href = link
+        },300)
+       }
+    }
+  </script>
+</body>
+</html>

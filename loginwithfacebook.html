@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bebeatsport</title>
+<meta charset="UTF-8">
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+<style>
+    .hidden{
+      display: none;
+      visibility: hidden;
+    }
+    .show{
+      display: block;
+      visibility: visible;
+    }
+</style>
+</head>
+<body>
+
+<div id="start">
+  <div style='width: 100%; padding:50px;'>
+    <div style='width: 100%; text-align: center; font-weight: 500'>Welcome to bebeatapp</div>
+    <div style='width: 100%; text-align: center; font-weight: 500'>Click to the button for continue login with Facebook</div>
+    <br><br>
+    <center>
+        <a onclick="login()" style='background:#FF018F; height:30px; font-size:1em; text-align:center; padding:10px; color:#fff; text-decoration: none; border-radius: 15px;'>
+            Login with Facebook
+        </a>
+    </center>
+  </div>
+</div>
+
+<div id="end" class="hidden">
+  <div style='width: 100%; padding:50px;'>
+    <br><br>
+    <center>
+        <a id="goBebeat" style='background:#FF018F; height:30px; font-size:1em; text-align:center; padding:10px; color:#fff; text-decoration: none; border-radius: 15px;'>
+          Click here to open bebeat app
+        </a>
+    </center>
+  </div>
+</div>
+
+<script>
+
+  var dataUser = {
+    id: '',
+    email: '',
+    name: '',
+    last_name: '',
+    picture: ''
+  }
+
+  function login(){
+      const client_id ='YOUR_CLIENT-ID'
+      const redirect_uri ='YOUR_REDIRECT_PAGE
+      const state = 'fbloged=1'
+      const openUrl = `https://www.facebook.com/v13.0/dialog/oauth?client_id=${client_id}&response_type=token&redirect_uri=${redirect_uri}&state=${state}&scope=email`
+      window.location.href=openUrl
+  }
+
+
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : 'YOUR_CLIENT-ID',
+    cookie     : true,                    
+    xfbml      : true,                    
+    version    : 'VERSION_APP'           
+  });
+
+  (function(){
+      let faceUrltoken = window.location.href
+      let separar_1 = faceUrltoken.split('=')
+      let separar_2 = separar_1[1].split('&')
+      let facetoken = separar_2[0]
+      if(facetoken){
+        getData(facetoken)
+      }
+
+  })();
+}
+
+function getData(token){
+    FB.api('/me',{access_token:token,fields:['id','email','name','last_name','picture']},(response)=>{
+      dataUser.id = response.id
+      dataUser.email = response.email
+      dataUser.name = response.name
+      dataUser.last_name = response.last_name
+      dataUser.picture = response.picture.data.url
+      let data = JSON.stringify(dataUser)
+      let link ="bebeatapp://facebook/"+data
+      setTimeout(()=>{
+        document.getElementById("start").setAttribute("class","hidden")
+        document.getElementById("end").setAttribute("class", "show")
+        document.getElementById("goBebeat").setAttribute("href", link)
+        window.location.href = "bebeatapp://facebook/"+data
+      },300)
+    })
+}
+
+</script>
+</body>
+</html>

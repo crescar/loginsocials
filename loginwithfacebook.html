@@ -53,7 +53,7 @@
 
   function login(){
       const client_id ='YOUR_CLIENT-ID'
-      const redirect_uri ='YOUR_REDIRECT_PAGE
+      const redirect_uri ='YOUR_REDIRECT_PAGE'
       const state = 'fbloged=1'
       const openUrl = `https://www.facebook.com/v13.0/dialog/oauth?client_id=${client_id}&response_type=token&redirect_uri=${redirect_uri}&state=${state}&scope=email`
       window.location.href=openUrl
